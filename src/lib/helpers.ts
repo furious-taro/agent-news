@@ -90,9 +90,14 @@ export function generateId(): string {
  *   `PRs #1024 and #1025` (every `#N` in the list);
  * - `issue #1146` and `issues #1146, #1147`. `issue` needs the `#`, because
  *   "to issue 21000 sBTC" is a verb with an amount that must still collapse;
- * - `owner/repo#N` and hyphenated `repo-name#N` shorthand. A GitHub owner has
- *   no `.`, and explorer path words (`block`, `tx`, `address`) are not repos,
- *   so `mempool.space/block#945123` and `explorer/tx#945123` stay rolling;
+ * - `owner/repo#N` and hyphenated `repo-name#N` shorthand with N of at most 5
+ *   digits. The owner follows GitHub's rule (letters, digits, inner hyphens;
+ *   no `.`), so `mempool.space/block#945123` is not a repo. The 5-digit cap,
+ *   not a word list, keeps explorer and height fragments rolling: block
+ *   heights have 6+ digits, so `explorer/txid#945123` and
+ *   `block-height#945123` still collapse. The cost is that shorthand for a
+ *   6-digit PR (`rust-lang/rust#140000`) collapses too; write `PR #140000`
+ *   or link `/pull/140000` to keep it apart;
  * - `/pull/N`, `/pulls/N`, `/issues/N` URL paths.
  * A bare `#N` is NOT a reference: `block height #945123`, `nonce #12345` and
  * `nonce#12345` must still collapse.
@@ -108,7 +113,7 @@ function normalizeRollingFields(input: string): string {
         (refs) => refs.replace(/\d+(?:,\d{3})*/g, refToken)
       )
       .replace(
-        /(?<![\w./:-])([A-Za-z0-9-]+\/(?!(?:blocks?|txs?|transactions?|address(?:es)?|addr)#)[\w.-]+|[\w.]*-[\w.-]*)#(\d+)\b/gi,
+        /(?<![\w./:-])([A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\/[\w.-]+|[\w.]*-[\w.-]*)#(\d{1,5})\b/gi,
         (_, repo: string, n: string) => `${repo}#${refToken(n)}`
       )
       .replace(/\/(pulls?|issues)\/(\d+)\b/gi, (_, kind: string, n: string) => `/${kind}/${refToken(n)}`)

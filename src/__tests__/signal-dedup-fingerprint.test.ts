@@ -210,6 +210,13 @@ describe("signalContentFingerprint — rolling-field normalization", () => {
     ["landing-page PRs #1024 and #1025", "landing-page PRs #1024 and #1026"],
     ["landing-page PRs #1024, #1025", "landing-page PRs #1024, #1026"],
     ["Hiro issues #1146 and #1147 closed", "Hiro issues #1146 and #1148 closed"],
+    // #916 fourth review: pin the positive side of the shorthand rule.
+    ["aibtcdev/x402-api.v2#1024 merged", "aibtcdev/x402-api.v2#1031 merged"],
+    ["org/txs-indexer#1024 merged", "org/txs-indexer#1031 merged"],
+    ["org/x402_api#1024 merged", "org/x402_api#1031 merged"],
+    // No word list any more: a repo named like an explorer path is still a repo.
+    ["org/blocks#1024 merged", "org/blocks#1031 merged"],
+    ["bitcoin/bitcoin#31234 merged", "bitcoin/bitcoin#31240 merged"],
   ])("keeps the reference in %j distinct from %j", (a, b) => {
     const titled = (headline: string) => ({
       headline,
@@ -251,6 +258,11 @@ describe("signalContentFingerprint — rolling-field normalization", () => {
     ["see mempool.space/block#945123", "see mempool.space/block#945124"],
     ["fees spike, explorer/tx#945123", "fees spike, explorer/tx#945124"],
     ["see block-explorer/address#945123", "see block-explorer/address#945124"],
+    // #916 fourth review: no word list to miss; 6+ digits are never shorthand.
+    ["fees spike, explorer/txid#945123", "fees spike, explorer/txid#945124"],
+    ["fees spike, explorer/height#945123", "fees spike, explorer/height#945124"],
+    ["fees spike at block-height#945123", "fees spike at block-height#945124"],
+    ["Stacks tip stacks-block#1234567", "Stacks tip stacks-block#1234568"],
   ])("still collapses the `#`-spelled rolling field in %j and %j", (a, b) => {
     const filed = (headline: string) => ({
       headline,
