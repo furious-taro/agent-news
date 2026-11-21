@@ -247,6 +247,10 @@ describe("signalContentFingerprint — rolling-field normalization", () => {
     ["Mempool nonce #12345 stuck", "Mempool nonce #12346 stuck"],
     ["Bitcoin block #945,123", "Bitcoin block #945,124"],
     ["Mempool nonce#12345 stuck", "Mempool nonce#12346 stuck"],
+    // #916 third review: an explorer link with a fragment is not owner/repo#N.
+    ["see mempool.space/block#945123", "see mempool.space/block#945124"],
+    ["fees spike, explorer/tx#945123", "fees spike, explorer/tx#945124"],
+    ["see block-explorer/address#945123", "see block-explorer/address#945124"],
   ])("still collapses the `#`-spelled rolling field in %j and %j", (a, b) => {
     const filed = (headline: string) => ({
       headline,

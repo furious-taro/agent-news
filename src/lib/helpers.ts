@@ -90,7 +90,9 @@ export function generateId(): string {
  *   `PRs #1024 and #1025` (every `#N` in the list);
  * - `issue #1146` and `issues #1146, #1147`. `issue` needs the `#`, because
  *   "to issue 21000 sBTC" is a verb with an amount that must still collapse;
- * - `owner/repo#N` and hyphenated `repo-name#N` shorthand;
+ * - `owner/repo#N` and hyphenated `repo-name#N` shorthand. A GitHub owner has
+ *   no `.`, and explorer path words (`block`, `tx`, `address`) are not repos,
+ *   so `mempool.space/block#945123` and `explorer/tx#945123` stay rolling;
  * - `/pull/N`, `/pulls/N`, `/issues/N` URL paths.
  * A bare `#N` is NOT a reference: `block height #945123`, `nonce #12345` and
  * `nonce#12345` must still collapse.
@@ -106,7 +108,7 @@ function normalizeRollingFields(input: string): string {
         (refs) => refs.replace(/\d+(?:,\d{3})*/g, refToken)
       )
       .replace(
-        /(?<![\w./:-])([\w.-]+\/[\w.-]+|[\w.]*-[\w.-]*)#(\d+)\b/g,
+        /(?<![\w./:-])([A-Za-z0-9-]+\/(?!(?:blocks?|txs?|transactions?|address(?:es)?|addr)#)[\w.-]+|[\w.]*-[\w.-]*)#(\d+)\b/gi,
         (_, repo: string, n: string) => `${repo}#${refToken(n)}`
       )
       .replace(/\/(pulls?|issues)\/(\d+)\b/gi, (_, kind: string, n: string) => `/${kind}/${refToken(n)}`)
