@@ -97,7 +97,9 @@ export function generateId(): string {
  *   heights have 6+ digits, so `explorer/txid#945123` and
  *   `block-height#945123` still collapse. The cost is that shorthand for a
  *   6-digit PR (`rust-lang/rust#140000`) collapses too; write `PR #140000`
- *   or link `/pull/140000` to keep it apart;
+ *   or link `/pull/140000` to keep it apart. Testnet, signet and regtest
+ *   heights can have 5 or fewer digits, so `block-height#94512` on a
+ *   testnet signal still reads as a reference (mainnet is unaffected);
  * - `/pull/N`, `/pulls/N`, `/issues/N` URL paths.
  * A bare `#N` is NOT a reference: `block height #945123`, `nonce #12345` and
  * `nonce#12345` must still collapse.
